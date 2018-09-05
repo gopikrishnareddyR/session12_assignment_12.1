@@ -4,11 +4,11 @@
 #Answer the below questions: 
 
 yeast <- read.table('https://archive.ics.uci.edu/ml/machine-learning-databases/yeast/yeast.data', stringsAsFactors = FALSE) 
-l <- readLines('https://archive.ics.uci.edu/ml/machine-learning-databases/yeast/yeast.names') 
-l<-l[(grep('^7', l) + 1):(grep('^8', l) - 1)]
-l <- l[grep('\\d\\..*:', l)] 
+char <- readLines('https://archive.ics.uci.edu/ml/machine-learning-databases/yeast/yeast.names') 
+char<-char[(grep('^7', char) + 1):(grep('^8', char) - 1)]
+char <- char[grep('\\d\\..*:', char)] 
 
-names(yeast) <- make.names(c(sub('.*\\d\\.\\s+(.*):.*', '\\1', l), 'class'))
+names(yeast) <- make.names(c(sub('.*\\d\\.\\s+(.*):.*', '\\1', char), 'class'))
 View(yeast)
 
 #a. Perform ANOVA test on the discriminant analysis scores of nuclear localization signals of both nuclear 
@@ -25,9 +25,15 @@ ggplot(yeast, aes(x =yeast$class, y = yeast$nuc)) +
 data<-lm(nuc~class, data=yeast)
 data<-lm(yeast$nuc~yeast$class, data=yeast)
 summary(data)
-t.test(yeast$nuc,yeast$yeastclass)
 
 anova(data) # one way anova, single variable
+
+library(car)
+Anova(data,type = "III") # two way anaova uing car package
+
+t.test(yeast$nuc,yeast$yeastclass) # no need of t test here
+
+
 
 
 
